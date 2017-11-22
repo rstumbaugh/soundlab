@@ -1,0 +1,4 @@
+.DS_Store
+ebs/dist/
+ebs/.elasticbeanstalk
+**/node_modules/
