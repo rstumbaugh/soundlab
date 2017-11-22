@@ -1,11 +1,10 @@
 const path = require('path');
-const webpack = require('webpack');
 
 module.exports = {
   context: path.resolve(__dirname, './src'),
   devtool: 'source-map',
   entry: {
-    app: './app.js'
+    app: './app.jsx',
   },
   output: {
     path: path.resolve(__dirname, './dist'),
@@ -18,13 +17,13 @@ module.exports = {
       components: path.resolve(__dirname, './src/components/'),
       pages: path.resolve(__dirname, './src/pages/'),
       js: path.resolve(__dirname, './src/'),
-      utils: path.resolve(__dirname, './src/utils/')
+      utils: path.resolve(__dirname, './src/utils/'),
     },
   },
   module: {
     rules: [
       {
-        test: /\.js$/,
+        test: /\.jsx?$/,
         exclude: [/node_modules/],
         use: [{
           loader: 'babel-loader',
@@ -33,8 +32,8 @@ module.exports = {
       },
       {
         test: /\.(png|svg|jpe?g)$/,
-        use: 'file-loader'
-      }
+        use: 'file-loader',
+      },
     ],
   },
 };
