@@ -4,12 +4,14 @@
   "description": "soundlab web server",
   "main": "index.js",
   "scripts": {
-    "start": "open http://localhost:8081 && node index.js",
-    "watch": "webpack --watch"
+    "start": "node index.js",
+    "watch": "webpack --watch",
+    "open": "open http://localhost:8081"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.17.1",
     "express": "^4.16.2",
     "react": "^16.1.1",
     "react-dom": "^16.1.1"
