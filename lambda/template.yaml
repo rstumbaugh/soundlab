@@ -1,0 +1,14 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Resources:
+  Testing:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: test.lambda_handler
+      Runtime: python3.6
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /test
+            Method: any
