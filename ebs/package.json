@@ -4,7 +4,7 @@
   "description": "soundlab web server",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node app/index.js",
     "watch": "webpack --watch",
     "open": "open http://localhost:8081"
   },

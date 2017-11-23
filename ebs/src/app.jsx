@@ -12,7 +12,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
-    axios.get('https://sul0jd1ro0.execute-api.us-east-1.amazonaws.com/prod/testing')
+    axios.get('/test')
       .then((response) => {
         this.setState({
           message: response.data.message
