@@ -2,3 +2,4 @@
 ebs/dist/
 ebs/.elasticbeanstalk
 **/node_modules/
+.eslintrc.json

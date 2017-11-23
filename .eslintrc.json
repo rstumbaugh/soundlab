@@ -8,6 +8,7 @@
 
     "rules": {
         "no-console": "off",
-        "import/newline-after-import": "off"
+        "import/newline-after-import": "off",
+        "comma-dangle": "off"
     }
 }
