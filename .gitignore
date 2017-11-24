@@ -4,3 +4,4 @@ ebs/.elasticbeanstalk
 **/node_modules/
 .eslintrc.json
 **/.env
+.vscode
