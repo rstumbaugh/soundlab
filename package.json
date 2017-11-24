@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "api": "cd lambda; sam local start-api",
+    "upload-lambda": "cd scripts && ./upload_lambda.sh"
   },
   "author": "",
   "license": "ISC",

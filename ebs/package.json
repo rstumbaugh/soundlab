@@ -6,7 +6,9 @@
   "scripts": {
     "start": "node app/index.js",
     "watch": "webpack --watch",
-    "open": "open http://localhost:8081"
+    "open": "open http://localhost:8081",
+    "build": "webpack -p",
+    "deploy": "webpack -p; eb deploy; eb open"
   },
   "author": "",
   "license": "ISC",
