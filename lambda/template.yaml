@@ -1,14 +1,25 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: 'AWS::Serverless-2016-10-31'
 Resources:
-  Testing:
+  GetSongs:
     Type: 'AWS::Serverless::Function'
     Properties:
-      Handler: test.lambda_handler
+      Handler: get_song_queue.lambda_handler
       Runtime: python3.6
       Events:
         Api:
           Type: Api
           Properties:
-            Path: /test
+            Path: /prod/get_song_queue
+            Method: any
+  AddRequest:
+    Type: 'AWS::Serverless::Function'
+    Properties:
+      Handler: add_song_request.lambda_handler
+      Runtime: python3.6
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /prod/add_song_request
             Method: any

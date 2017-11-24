@@ -1,18 +1,18 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const app = express();
 const request = require('./utils/request');
+const app = express();
 const port = 8081;
 
 app.use(express.static('dist'));
 
 app.get('/test', (req, res) => {
-  request.get('sul0jd1ro0.execute-api.us-east-1.amazonaws.com', '/prod/testing')
+  request.get(process.env.LAMBDA_HOST, '/prod/get_song_queue')
     .then(response => res.json(response))
     .catch((err) => {
       res.status(500).send('Internal server error');
-      console.error(err);
+      console.log(err);
     });
 });
 
