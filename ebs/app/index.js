@@ -1,29 +1,29 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const request = require('./utils/request');
 const app = express();
+const http = require('http').Server(app);
+const io = require('socket.io')(http);
+const session = require('./utils/session');
 const port = 8081;
 
+session.init(io);
 app.use(express.static('dist'));
 
-app.get('/test', (req, res) => {
-  request.get(process.env.LAMBDA_HOST, '/prod/get_song_queue')
-    .then(response => res.json(response))
-    .catch((err) => {
-      res.status(500).send('Internal server error');
-      console.log(err);
-    });
+io.on('connection', (socket) => {
+  socket.on('join session', (sessionName) => {
+    session.joinSession(sessionName, socket);
+  });
+
+  socket.on('disconnect', () => {
+    session.leaveSession(socket);
+  });
 });
 
-app.get('/', (req, res) => {
+app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, '../index.html'));
 });
 
-app.listen(port, (err) => {
-  if (err) {
-    return;
-  }
-
+http.listen(port, () => {
   console.log(`listening on ${port}`);
 });

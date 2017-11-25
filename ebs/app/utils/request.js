@@ -20,8 +20,6 @@ module.exports = {
       secretAccessKey: process.env.AWS_SECRET_KEY
     });
 
-    console.log(signedRequest);
-
     return new Promise((resolve, reject) => {
       request.get(signedRequest, (response) => {
         response.on('data', d => resolve(JSON.parse(d)));
