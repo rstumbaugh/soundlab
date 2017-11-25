@@ -7,6 +7,7 @@ SoundLab is a collaborative DJ web app created using various services provided b
 * [AWS Command Line Interface](https://aws.amazon.com/cli/) installed (with `PATH` configured).
 * [AWS SAM Local](https://github.com/awslabs/aws-sam-local) installed.
 * [Elastic Beanstalk CLI](http://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3.html) installed.
+* [Docker daemon](https://www.docker.com/) installed & running.
 * `npm` and `node.js`
 
 ### Clone the repo
@@ -20,7 +21,11 @@ SoundLab is a collaborative DJ web app created using various services provided b
 ### Start the API
 In `soundlab/`, execute `npm run api`.
 
-### Start the app server
-In `soundlab/eb/`, execute `npm run start`.
+### Compile the JS & start the app server
+`cd eb/`
 
-If doing local development on the React front end, execute `npm run watch` in `soundlab/eb/`.
+`npm run build`
+
+`npm run start`
+
+Navigate to `localhost:8081` in a different browser tabs to simulate a few users. To join an existing session, simply enter the same session name on the home page.
