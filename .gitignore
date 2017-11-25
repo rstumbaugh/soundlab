@@ -1,6 +1,6 @@
 .DS_Store
-ebs/dist/
-ebs/.elasticbeanstalk
+eb/dist/
+eb/.elasticbeanstalk
 **/node_modules/
 .eslintrc.json
 **/.env
