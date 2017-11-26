@@ -1,3 +1,5 @@
+const logging = require('./logging');
+
 let io;
 let sessions = {};
 
@@ -51,6 +53,7 @@ function leaveSession(socket, sessionName = '') {
 
     if (socket.id === dj.id) {
       io.to(sessionName).emit('session over', 'DJ has left the session.');
+      logging.log(`dj left [session=${sessionName}]`);
       delete sessions[sessionName];
     }
   } else {
