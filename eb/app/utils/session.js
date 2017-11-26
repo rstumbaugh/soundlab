@@ -30,9 +30,8 @@ function getSessionInfo(sessionName) {
 // find client's active session
 function getClientSession(socket) {
   let sessionName;
-  Object.entries(sessions).forEach((entry) => {
-    const name = entry[0];
-    const session = entry[1];
+  Object.keys(sessions).forEach((name) => {
+    const session = sessions[name];
     const clientIds = session.clients.map(c => c.id);
     if (clientIds.includes(socket.id)) {
       sessionName = name;
