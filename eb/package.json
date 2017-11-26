@@ -8,7 +8,8 @@
     "watch": "webpack --watch",
     "open": "open http://localhost:8081",
     "build": "webpack -p",
-    "deploy": "webpack -p; eb deploy; eb open"
+    "deploy": "webpack -p; eb deploy; eb open",
+    "ssh": "ssh -i ~/Development/keys/aws/rstum-cmsc389l.pem ec2-user@ec2-54-83-3-163.compute-1.amazonaws.com"
   },
   "author": "",
   "license": "ISC",
