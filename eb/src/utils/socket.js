@@ -1,4 +1,4 @@
 import io from 'socket.io-client';
-const socket = io('localhost:8081');
+const socket = io(window.location.host);
 
 export default socket;
