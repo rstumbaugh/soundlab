@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import SoundCloud from 'components/soundcloud.jsx';
 import socket from 'utils/socket';
 
 const propTypes = {
@@ -39,6 +40,10 @@ class Session extends React.Component {
     socket.on('session over', addMessage);
   }
 
+  handleClick() {
+    socket.emit('add song', '341972528');
+  }
+
   render() {
     return (
       <div>
@@ -48,6 +53,7 @@ class Session extends React.Component {
         <div>
           { this.state.messages.map((msg, i) => <p key={i}>{ msg }</p>) }
         </div>
+        <button onClick={this.handleClick}>Add song</button>
       </div>
     );
   }

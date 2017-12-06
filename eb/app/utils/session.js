@@ -24,6 +24,10 @@ function joinSession(sessionName, socket) {
   }
 }
 
+function isDj(socket, sessionName) {
+  return sessions[sessionName].dj.id === socket.id;
+}
+
 // get clients & dj for a session
 function getSessionInfo(sessionName) {
   return sessions[sessionName];
@@ -35,6 +39,7 @@ function getClientSession(socket) {
   Object.keys(sessions).forEach((name) => {
     const session = sessions[name];
     const clientIds = session.clients.map(c => c.id);
+
     if (clientIds.includes(socket.id)) {
       sessionName = name;
     }
@@ -47,8 +52,8 @@ function getClientSession(socket) {
 function leaveSession(socket, sessionName = '') {
   if (sessionName) {
     let { clients, dj } = sessions[sessionName];
-    const clientIndex = clients.find(c => c.id === socket.id);
-    clients.splice(clientIndex);
+    const clientIndex = clients.indexOf(c => c.id === socket.id);
+    clients.splice(clientIndex, 1);
     sessions[sessionName].clients = clients;
 
     if (socket.id === dj.id) {
@@ -65,5 +70,5 @@ function leaveSession(socket, sessionName = '') {
 }
 
 module.exports = {
-  init, joinSession, leaveSession, getSessionInfo
+  init, joinSession, leaveSession, getSessionInfo, getClientSession, isDj
 };

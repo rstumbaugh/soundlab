@@ -5,10 +5,11 @@ const app = express();
 const http = require('http').Server(app);
 const io = require('socket.io')(http, {
   pingInterval: 10000,
-  pingTimeout: 5000
+  pingTimeout: 10000
 });
 const session = require('./utils/session');
 const logging = require('./utils/logging');
+const { addSongRequest } = require('./utils/lambda');
 const port = 8081;
 
 session.init(io);
@@ -19,6 +20,12 @@ io.on('connection', (socket) => {
   socket.on('join session', (sessionName) => {
     session.joinSession(sessionName, socket);
     logging.log(`joined session [session=${sessionName}, client=${socket.id}]`);
+  });
+
+  socket.on('add song', (songId) => {
+    const sessionName = session.getClientSession(socket);
+    const isDj = session.isDj(socket, sessionName);
+    addSongRequest(sessionName, songId, isDj);
   });
 
   socket.on('disconnect', () => {
@@ -32,5 +39,5 @@ app.get('*', (req, res) => {
 });
 
 http.listen(port, () => {
-  logging.log(`listening on ${port} (${new Date(Date.now())}`);
+  logging.log(`listening on ${port}`);
 });
