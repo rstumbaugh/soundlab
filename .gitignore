@@ -5,3 +5,5 @@ eb/.elasticbeanstalk
 .eslintrc.json
 **/.env
 .vscode
+**/__pycache__/
+**/npm-debug.log
