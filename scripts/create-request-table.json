@@ -1,0 +1,13 @@
+{
+  "TableName": "request_queue",
+  "KeySchema": [
+    { "AttributeName": "session_name", "KeyType": "HASH" }
+  ],
+  "AttributeDefinitions": [
+    { "AttributeName": "session_name", "AttributeType": "S" }
+  ],
+  "ProvisionedThroughput": {
+    "ReadCapacityUnits": 5,
+    "WriteCapacityUnits": 5
+  }
+}

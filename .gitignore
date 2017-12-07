@@ -7,3 +7,4 @@ eb/.elasticbeanstalk
 .vscode
 **/__pycache__/
 **/npm-debug.log
+*.db

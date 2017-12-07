@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "api": "cd lambda; sam local start-api",
-    "upload-lambda": "cd scripts && ./upload_lambda.sh"
+    "api": "export FLASK_APP=api.py; flask run",
+    "upload-lambda": "cd scripts && ./upload_lambda.sh",
+    "dynamo": "java -Djava.library.path=~/Development/libraries/dynamodb_local_latest/DynamoDBLocal_lib -jar ~/Development/libraries/dynamodb_local_latest/DynamoDBLocal.jar -sharedDb -port 5555"
   },
   "author": "",
   "license": "ISC",
