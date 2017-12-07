@@ -8,3 +8,10 @@ eb/.elasticbeanstalk
 **/__pycache__/
 **/npm-debug.log
 *.db
+lambda_funcs/*
+!lambda_funcs/add_song_request/
+lambda_funcs/add_song_request/*
+!lambda_funcs/add_song_request/func.py
+!lambda_funcs/get_song_queue/
+lambda_funcs/get_song_queue/*
+!lambda_funcs/get_song_queue/func.py

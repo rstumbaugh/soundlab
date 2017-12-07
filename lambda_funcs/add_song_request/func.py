@@ -14,6 +14,8 @@ def lambda_handler(event, context):
   database = boto3.resource('dynamodb', endpoint_url=endpoint_url)
   table = database.Table('request_queue')
   
+  # if user is DJ, add to song queue directly. broadcast update to all on completion
+  # otherwise, add song to request queue. broadcast to DJ on completion
   table.put_item(
     Item={
       'song_id': 12345,
@@ -22,7 +24,7 @@ def lambda_handler(event, context):
     }
   )
   
-  body = json.dumps({ 'message': 'put item!' })
+  body = { 'message': 'put item!' }
   if context:
     response = {
       'statusCode': 200,
@@ -31,7 +33,7 @@ def lambda_handler(event, context):
           'Content-Type': 'application/json',
           'Access-Control-Allow-Origin': '*'
       },
-      'body': body
+      'body': json.dumps(body)
     }
   else:
     response = body
