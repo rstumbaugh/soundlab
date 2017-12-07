@@ -1,6 +1,6 @@
 #! /bin/bash
 
-for i in $( ls ../lambda/*.py ); do
+for i in $( ls ../lambda_funcs/*.py ); do
     name=$(basename $i .py)
     cp $i .
     zipfile=$name.zip
