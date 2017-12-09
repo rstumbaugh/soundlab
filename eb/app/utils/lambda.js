@@ -1,10 +1,8 @@
 const { get, post } = require('./request');
 
-function addSongRequest(sessionName, songId, isDj) {
-  const url = `/prod/add_song_request?session=${sessionName}&song=${songId}&dj=${isDj}`;
-  post(process.env.LAMBDA_HOST, url)
-    .then(response => console.log(`response type: ${typeof response}`))
-    .catch(err => console.log(err));
+function addSongRequest(sessionName, songId) {
+  const url = `/prod/add_song?session=${sessionName}&song=${songId}`;
+  return post(process.env.LAMBDA_HOST, url);
 }
 
 module.exports = {

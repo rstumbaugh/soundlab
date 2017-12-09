@@ -25,7 +25,12 @@ io.on('connection', (socket) => {
   socket.on('add song', (songId) => {
     const sessionName = session.getClientSession(socket);
     const isDj = session.isDj(socket, sessionName);
-    addSongRequest(sessionName, songId, isDj);
+
+    addSongRequest(sessionName, songId)
+      .then(response => console.log(response))
+      .catch((err) => {
+        console.log(err);
+      });
   });
 
   socket.on('disconnect', () => {

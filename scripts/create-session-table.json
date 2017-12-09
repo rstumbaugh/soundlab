@@ -1,5 +1,5 @@
 {
-  "TableName": "request_queue",
+  "TableName": "session",
   "KeySchema": [
     { "AttributeName": "session_name", "KeyType": "HASH" }
   ],
