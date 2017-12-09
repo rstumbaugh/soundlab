@@ -1,11 +1,4 @@
-const logging = require('./logging');
-
-let io;
 let sessions = {};
-
-function init(socketIo) {
-  io = socketIo;
-}
 
 // join or create session
 function joinSession(sessionName, socket) {
@@ -14,7 +7,6 @@ function joinSession(sessionName, socket) {
   if (sessions[sessionName]) {
     sessions[sessionName].clients.push(socket);
     socket.emit('joined', 'Joined session!'); // return session queue here
-    io.to(sessionName).emit('new client', `${socket.id} joined the session`);
   } else {
     sessions[sessionName] = {
       dj: socket,
@@ -57,18 +49,16 @@ function leaveSession(socket, sessionName = '') {
     sessions[sessionName].clients = clients;
 
     if (socket.id === dj.id) {
-      io.to(sessionName).emit('session over', 'DJ has left the session.');
-      logging.log(`dj left [session=${sessionName}]`);
       delete sessions[sessionName];
+      return true;
     }
-  } else {
-    const session = getClientSession(socket);
-    if (session) {
-      leaveSession(socket, session);
-    }
+    return false;
   }
+
+  const session = getClientSession(socket);
+  return leaveSession(socket, session);
 }
 
 module.exports = {
-  init, joinSession, leaveSession, getSessionInfo, getClientSession, isDj
+  joinSession, leaveSession, getSessionInfo, getClientSession, isDj
 };
