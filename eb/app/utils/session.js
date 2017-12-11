@@ -1,19 +1,39 @@
 let sessions = {};
+const sessionNameLength = 5;
+
+function getUniqueSessionName() {
+  let sessionName;
+  const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+  do {
+    sessionName = '';
+    for (let i = 0; i < sessionNameLength; i++) {
+      const idx = Math.floor(Math.random() * chars.length);
+      sessionName += chars.charAt(idx);
+    }
+  } while (sessions[sessionName]);
+
+  return sessionName;
+}
+
+function createSession(socket) {
+  const sessionName = getUniqueSessionName();
+
+  sessions[sessionName] = {
+    dj: socket,
+    clients: []
+  };
+
+  return sessionName;
+}
 
 // join or create session
 function joinSession(sessionName, socket) {
-  socket.join(sessionName);
-
-  if (sessions[sessionName]) {
-    sessions[sessionName].clients.push(socket);
-    socket.emit('joined', 'Joined session!'); // return session queue here
-  } else {
-    sessions[sessionName] = {
-      dj: socket,
-      clients: [socket]
-    };
-    socket.emit('joined', 'Created session!');
+  if (!sessions[sessionName]) {
+    return false;
   }
+  socket.join(sessionName);
+  sessions[sessionName].clients.push(socket);
+  return true;
 }
 
 function isDj(socket, sessionName) {
@@ -56,9 +76,13 @@ function leaveSession(socket, sessionName = '') {
   }
 
   const session = getClientSession(socket);
-  return leaveSession(socket, session);
+  if (session) {
+    return leaveSession(socket, session);
+  }
+
+  return false;
 }
 
 module.exports = {
-  joinSession, leaveSession, getSessionInfo, getClientSession, isDj
+  createSession, joinSession, leaveSession, getSessionInfo, getClientSession, isDj
 };

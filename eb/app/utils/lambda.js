@@ -1,10 +1,20 @@
-const { get, post } = require('./request');
+const request = require('./request');
 
-function addSongRequest(sessionName, songId) {
+function addSong(sessionName, songId) {
   const url = `/prod/add_song?session=${sessionName}&song=${songId}`;
-  return post(process.env.LAMBDA_HOST, url);
+  return request.post(process.env.LAMBDA_HOST, url);
+}
+
+function getSongQueue(sessionName) {
+  const url = `/prod/get_song_queue?session=${sessionName}`;
+  return request.get(process.env.LAMBDA_HOST, url);
+}
+
+function deleteSession(sessionName) {
+  const url = `/prod/delete_session?session=${sessionName}`;
+  return request.delete(process.env.LAMBDA_HOST, url);
 }
 
 module.exports = {
-  addSongRequest
+  addSong, getSongQueue, deleteSession
 };

@@ -2,7 +2,7 @@ const https = require('https');
 const http = require('http');
 const aws4 = require('aws4');
 
-const request = (host, path, method, body = {}) => {
+const request = (host, path, method) => {
   let req = https;
   const options = {
     host,
@@ -24,7 +24,13 @@ const request = (host, path, method, body = {}) => {
 
   return new Promise((resolve, reject) => {
     req.get(signedRequest, (response) => {
-      response.on('data', d => resolve(JSON.parse(d)));
+      response.on('data', (d) => {
+        try {
+          resolve(JSON.parse(d));
+        } catch (e) {
+          reject(e);
+        }
+      });
       response.on('error', e => reject(e));
     }).end();
   });
@@ -32,5 +38,6 @@ const request = (host, path, method, body = {}) => {
 
 module.exports = {
   get: (host, path) => request(host, path, 'GET'),
-  post: (host, path, body) => request(host, path, 'POST', body),
+  post: (host, path) => request(host, path, 'POST'),
+  delete: (host, path) => request(host, path, 'DELETE')
 };
