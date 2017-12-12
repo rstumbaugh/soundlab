@@ -4,33 +4,42 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 const Header = (props) => {
-  const StyledHeader = styled.div`
+  const StyledHeader = styled.nav`
     width: 100%;
     padding: ${p => p.paddingVertical || '8px'} 0;
-    font-size: ${p => p.fontSize};
+    font-size: ${p => p.fontSize || '2.7em'};
     text-align: center;
-    font-family: 'Bungee', cursive
+    font-family: 'Bungee', cursive;
+    background-color: ${p => p.backgroundColor || 'white'};
+    color: ${p => p.fontColor || 'inherit'};
+    border-radius: 0;
+
+    a, a:hover {
+      color: ${p => p.fontColor || 'inherit'};
+    }
   `;
 
   return (
-    <StyledHeader {...props}>
-      <Link to='/' style={{ color: props.fontColor || 'black' }}>
+    <StyledHeader {...props} className={`${props.className || ''} has-text-centered`}>
+      <Link to='/'>
         SoundLab
       </Link>
     </StyledHeader>
   );
 };
 Header.propTypes = {
+  className: PropTypes.string,
   fontSize: PropTypes.string,
   fontColor: PropTypes.string
 };
 
 const Content = props => (
-  <div className='content-wrap'>
+  <div className='content-wrap' style={{ padding: props.padding || '15px 0' }}>
     { props.children }
   </div>
 );
 Content.propTypes = {
+  padding: PropTypes.string,
   children: PropTypes.any
 };
 

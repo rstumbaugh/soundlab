@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import { Header, Content } from 'components/layout.jsx';
 import socket from 'utils/socket';
+import styleVars from 'styles/variables';
 
 const propTypes = {
   history: PropTypes.object
@@ -53,13 +54,12 @@ class Home extends React.Component {
 
     return (
       <div>
-        <Content>
+        <Content padding='0'>
           <section className='hero is-fullheight is-info'>
             <div className='hero-head'>
               <Header
-                fontSize='2.7em'
+                backgroundColor={styleVars.infoBlue}
                 fontColor='white'
-                paddingVertical='20px'
               />
             </div>
             <StyledContent className='hero-body has-text-centered'>

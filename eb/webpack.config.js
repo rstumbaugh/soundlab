@@ -18,6 +18,7 @@ module.exports = {
       pages: path.resolve(__dirname, './src/pages/'),
       js: path.resolve(__dirname, './src/'),
       utils: path.resolve(__dirname, './src/utils/'),
+      styles: path.resolve(__dirname, './src/styles/')
     },
   },
   module: {
