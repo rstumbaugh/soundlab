@@ -4,7 +4,8 @@ import SoundcloudWidget from 'soundcloud-widget';
 
 const propTypes = {
   trackId: PropTypes.string.isRequired,
-  onFinish: PropTypes.func.isRequired
+  onFinish: PropTypes.func.isRequired,
+  width: PropTypes.string
 };
 
 class SoundCloud extends React.Component {
@@ -29,10 +30,11 @@ class SoundCloud extends React.Component {
               '&amp;show_comments=false' +
               '&amp;show_user=true' +
               '&amp;show_reposts=false' +
-              '&amp;show_teaser=false'}
+              '&amp;show_teaser=false' +
+              '&amp;visual=true'}
           title='Song'
-          width='100%'
-          height='166'
+          width={this.props.width || '100%'}
+          height='300'
           scrolling='no'
           frameBorder='no'
         />

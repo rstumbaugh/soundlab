@@ -7,6 +7,7 @@ const Header = (props) => {
   const StyledHeader = styled.nav`
     width: 100%;
     padding: ${p => p.paddingVertical || '8px'} 0;
+    margin-bottom: 0 !important;
     font-size: ${p => p.fontSize || '2.7em'};
     text-align: center;
     font-family: 'Bungee', cursive;
@@ -34,12 +35,11 @@ Header.propTypes = {
 };
 
 const Content = props => (
-  <div className='content-wrap' style={{ padding: props.padding || '15px 0' }}>
+  <div className='content-wrap'>
     { props.children }
   </div>
 );
 Content.propTypes = {
-  padding: PropTypes.string,
   children: PropTypes.any
 };
 
