@@ -43,10 +43,6 @@ Content.propTypes = {
   children: PropTypes.any
 };
 
-const Footer = () => (
-  <div className='footer' />
-);
-
 export {
-  Header, Content, Footer
+  Header, Content
 };

@@ -2,8 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import axios from 'axios';
-import SoundCloud from 'components/soundcloud.jsx';
-import { Header, Content, Footer } from 'components/layout.jsx';
+import NowPlaying from 'components/now-playing.jsx';
+import { Header, Content } from 'components/layout.jsx';
 import Queue from 'components/queue.jsx';
 import RequestForm from 'components/request-form.jsx';
 import socket from 'utils/socket';
@@ -24,8 +24,9 @@ class Session extends React.Component {
 
     this.state = {
       sessionName: props.match.params.id,
-      messages: [],
-      songs: ['12345', '67890', '23455']
+      songs: [],
+      requests: [],
+      isDj: false
     };
   }
 
@@ -38,49 +39,84 @@ class Session extends React.Component {
     axios.get(`/api/session/${this.state.sessionName}`)
       .then((response) => {
         socket.emit('join session', this.state.sessionName);
-        console.log(response.data);
+        this.setState({
+          songs: JSON.parse(response.data).song_queue
+        });
       })
       .catch(() => this.props.history.push('/'));
 
-    const addMessage = (message) => {
-      let { messages } = this.state;
-      messages.push(message);
-      this.setState({ messages });
-    };
+    socket.removeListener('new request');
+    socket.removeListener('new song');
+    socket.removeListener('sessionOver');
 
-    socket.on('joined', addMessage);
-    socket.on('new client', addMessage);
-    socket.on('new request', addMessage);
-    socket.on('new song', addMessage);
-    socket.on('session over', () => addMessage('DJ has left. Session ended.'));
+    socket.on('new request', (songId) => {
+      this.onNewTrack(songId, 'requests');
+    });
+    socket.on('new song', (songId) => {
+      this.onNewTrack(songId, 'songs');
+    });
+    socket.on('session over', () => console.log('DJ has left. Session ended.'));
+  }
+  
+  onNewTrack(songId, stateAttr) {
+    let array = this.state[stateAttr];
+    array.push(songId);
+    let s = {};
+    s[stateAttr] = array;
+    this.setState(s);
   }
 
-  handleClick() {
-    socket.emit('add song', '341972528');
+  onSongRequest(song) {
+    socket.emit('add song', song);
+  }
+
+  handleAccept(song) {
+    console.log(song);
   }
 
   render() {
-    const StyledContent = styled.div`
-      padding: 15px;
-      position: relative;
-      background-color: ${styleVars.lightGray};
+    // can't use styled-components as wrapper
+    // need to watch for "shouldComponentUpdate" in soundcloud widget
+    const style = (
+      <style>{`
+        div.content {
+          padding: 15px;
+          position: relative;
+          background-color: ${styleVars.lightGray};
+        }
 
-      h3 {
-        font-weight: 600;
-      }
+        h3 {
+          font-weight: 600;
+        }
 
-      p {
-        font-weight: 300;
-        color: ${styleVars.dark};
-      }
+        p {
+          font-weight: 300;
+          color: ${styleVars.dark};
+        }
 
-      .box.session-info h3,
-      .box.session-info > div {
-        display: inline-block;
-        margin-right: 10px;
-        margin-bottom: 0;
-      }
-    `;
+        .column:first-child {
+          max-width: 434px;
+        }
+  
+        .box.session-info h3,
+        .box.session-info > div {
+          display: inline-block;
+          margin-right: 10px;
+          margin-bottom: 0;
+        }
+  
+        .no-song {
+          text-align: center;
+        }
+        .no-song .icon-wrap {
+          width: 100%;
+          text-align: center;
+          font-size: 5em;
+          margin-bottom: 25px;
+        }
+      `}
+      </style>
+    );
     return (
       <div>
         <Header 
@@ -89,7 +125,8 @@ class Session extends React.Component {
           fontColor='white'
         />
         <Content>
-          <StyledContent className='content has-text-left'>
+          { style }
+          <div className='content has-text-left'>
             <section className='columns'>
               <div className='column'>
                 <div className='box session-info'>
@@ -102,17 +139,24 @@ class Session extends React.Component {
                   </div>
                 </div>
                 <div className='box'>
-                  <RequestForm />
+                  <RequestForm 
+                    onClick={this.onSongRequest}
+                  />
+                </div>
+                <div className='box'>
+                  <Queue
+                    title='Request Queue'
+                    items={this.state.requests}
+                    maxHeight='150px'
+                    showAcceptReject
+                    onAccept={this.handleAccept.bind(this)}
+                    onReject={this.handleAccept.bind(this)}
+                  />
                 </div>
               </div>
               <div className='column now-playing-column'>
                 <div className='box'>
-                  <h2>Now Playing</h2>
-                  <SoundCloud 
-                    trackId='322834362' 
-                    onFinish={() => console.log('done')} 
-                    width='500px'
-                  />
+                  <NowPlaying songs={this.state.songs} />
                 </div>
               </div>
               <div className='column queue-column'>
@@ -120,13 +164,19 @@ class Session extends React.Component {
                   <Queue 
                     title='Song Queue'
                     items={this.state.songs} 
+                    maxHeight='250px'
+                    highlightFirst
                   />
+                  <br />
+                  <p>
+                    To add a song to the queue, just request a track. If 
+                    the DJ accepts your request, it will show up in the queue.
+                  </p>
                 </div>
               </div>  
             </section>
-          </StyledContent>
+          </div>
         </Content>
-        <Footer />
       </div>
     );
   }

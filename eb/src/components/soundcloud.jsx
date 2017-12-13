@@ -16,6 +16,10 @@ class SoundCloud extends React.Component {
     });
   }
 
+  shouldComponentUpdate(nextProps) {
+    return nextProps.trackId !== this.props.trackId;
+  }
+
   render() {
     return (
       <div className='soundcloud-widget-wrapper'>
@@ -25,7 +29,7 @@ class SoundCloud extends React.Component {
             'https://w.soundcloud.com/player/' +
               `?url=https%3A//api.soundcloud.com/tracks/${this.props.trackId}` +
               '&amp;color=%23ff5500' +
-              '&amp;auto_play=false' +
+              '&amp;auto_play=true' +
               '&amp;hide_related=true' +
               '&amp;show_comments=false' +
               '&amp;show_user=true' +

@@ -4,69 +4,118 @@ import styled from 'styled-components';
 import styleVars from 'styles/variables';
 
 const propTypes = {
-  items: PropTypes.array.isRequired
+  title: PropTypes.string.isRequired,
+  items: PropTypes.array.isRequired,
+  maxHeight: PropTypes.string,
+  minHeight: PropTypes.string,
+  highlightFirst: PropTypes.bool,
+  showAcceptReject: PropTypes.bool,
+  onAccept: PropTypes.func,
+  onReject: PropTypes.func
 };
 
-class Queue extends React.Component {
-  constructor(props) {
-    super(props);
+const Queue = (props) => {
+  const StyledQueue = styled.div`
+    .queue-item-wrap {
+      max-height: ${p => p.maxHeight || 'none'};
+      min-height: ${p => p.minHeight || 0};
+      overflow-y: auto;
+    }
+  `;
 
-    this.state = {
-      items: props.items
-    };
-  }
-
-  render() {
-    const StyledQueue = styled.div`
-      border-radius: 3px;
-      border: 1px solid ${styleVars.grayBorder};
-
-      p.queue-heading {
-        padding: 10px 100px;
-        background-color: ${styleVars.lightGray};
-        border-bottom: 1px solid ${styleVars.grayBorder};
-        font-size: 1.3em;
-        margin-bottom: 0;
-      }
-    `;
-
-    return (
-      <StyledQueue>
-        <p className='queue-heading'>
-          Song Queue
-        </p>
-        <div>
-          {
-            this.state.items.map(song => <QueueItem song={song} />)
-          }
-        </div>
-      </StyledQueue>
-    );
-  }
-}
+  return (
+    <StyledQueue 
+      maxHeight={props.maxHeight} 
+      minHeight={props.minHeight}
+    >
+      <h3>{ props.title }</h3>
+      <div className='queue-item-wrap'>
+        {props.items.length > 0 ? (
+          props.items.map(song => (
+            <QueueItem 
+              song={song} 
+              highlightFirst={props.highlightFirst}
+              showAcceptReject={props.showAcceptReject}
+              onAccept={props.showAcceptReject ? props.onAccept : undefined}
+              onReject={props.showAcceptReject ? props.onReject : undefined}
+            />
+          ))
+        ) : (
+          <div className='empty-queue'>
+            <span className='icon'>
+              <i className='fa fa-music' />
+            </span>
+            <i> No songs in the queue</i>
+          </div>
+        )}
+      </div>
+    </StyledQueue>
+  );
+};
 Queue.propTypes = propTypes;
 
 const QueueItem = (props) => {
   const StyledItem = styled.li`
     list-style-type: none;
     border-top: 1px solid ${styleVars.grayBorder};
-    margin: 0;
-    padding: 10px 5px;
+    padding: ${p => p.showAcceptReject ? '10px 60px 10px 5px' : '10px 5px'};
+    position: relative;
+    word-wrap: break-word;
 
     &:first-child {
       border-top: 0;
-      color: ${styleVars.infoBlue};
+      color: ${p => p.highlightFirst ? styleVars.infoBlue : 'inherit'};
+    }
+
+    .icon-wrap {
+      position: absolute;
+      top: 10px;
+      right: 5px;
+
+      .fa:hover {
+        cursor: pointer;
+      }
+
+      .fa-check {
+        color: ${styleVars.green};
+      }
+
+      .fa-close {
+        color: ${styleVars.red};
+      }
     }
   `;
 
   return (
-    <StyledItem>
+    <StyledItem {...props}>
       { props.song }
+      {props.showAcceptReject ? (
+        <div className='icon-wrap'>
+          <span 
+            className='icon' 
+            onClick={() => props.showAcceptReject ? props.onAccept(props.song) : false}
+          >
+            <i className='fa fa-check' />
+          </span>
+          <span 
+            className='icon' 
+            onClick={() => props.showAcceptReject ? props.onReject(props.song) : false}
+          >
+            <i className='fa fa-close' />
+          </span>
+        </div>
+      ) : (
+        ''
+      )}
     </StyledItem>
   );
 };
 QueueItem.propTypes = {
-  song: PropTypes.string
+  song: PropTypes.string,
+  showAcceptReject: PropTypes.bool,
+  highlightFirst: PropTypes.bool,
+  onAccept: PropTypes.func,
+  onReject: PropTypes.func
 };
 
 export default Queue;
