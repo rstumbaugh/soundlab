@@ -82,7 +82,11 @@ app.get('/api/session/:sessionName', (req, res) => {
   if (sessionInfo) {
     getSongQueue(sessionName)
       .then((response) => {
-        res.json(response);
+        const data = {
+          songQueue: JSON.parse(response).song_queue,
+          djId: sessionInfo.dj.id
+        };
+        res.json(data);
       })
       .catch((err) => {
         logging.error(err);

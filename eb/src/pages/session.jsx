@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import styled from 'styled-components';
 import axios from 'axios';
 import NowPlaying from 'components/now-playing.jsx';
 import { Header, Content } from 'components/layout.jsx';
@@ -38,9 +37,11 @@ class Session extends React.Component {
 
     axios.get(`/api/session/${this.state.sessionName}`)
       .then((response) => {
+        const { songQueue, djId } = response.data;
         socket.emit('join session', this.state.sessionName);
         this.setState({
-          songs: JSON.parse(response.data).song_queue
+          songs: songQueue,
+          isDj: socket.id === djId
         });
       })
       .catch(() => this.props.history.push('/'));
@@ -67,7 +68,9 @@ class Session extends React.Component {
   }
 
   onSongRequest(song) {
-    socket.emit('add song', song);
+    if (song) {
+      socket.emit('add song', song);
+    }
   }
 
   handleAccept(song) {
@@ -143,16 +146,20 @@ class Session extends React.Component {
                     onClick={this.onSongRequest}
                   />
                 </div>
-                <div className='box'>
-                  <Queue
-                    title='Request Queue'
-                    items={this.state.requests}
-                    maxHeight='150px'
-                    showAcceptReject
-                    onAccept={this.handleAccept.bind(this)}
-                    onReject={this.handleAccept.bind(this)}
-                  />
-                </div>
+                {this.state.isDj ? (
+                  <div className='box'>
+                    <Queue
+                      title='Request Queue'
+                      items={this.state.requests}
+                      maxHeight='150px'
+                      showAcceptReject
+                      onAccept={this.handleAccept.bind(this)}
+                      onReject={this.handleAccept.bind(this)}
+                    />
+                  </div>
+                ) : (
+                  ''
+                )}
               </div>
               <div className='column now-playing-column'>
                 <div className='box'>

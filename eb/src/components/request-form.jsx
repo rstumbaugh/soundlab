@@ -36,11 +36,11 @@ class RequestForm extends React.Component {
         margin-top: 15px;
         margin-left: 5px;
         opacity: 1;
-        transition: opacity 0.5s linear;
+        transition: opacity 0.25s ease-in;
 
         &.hidden {
           opacity: 0;
-          transition: opacity 0.5s linear;
+          transition: opacity 0.25s ease-out;
         }
       }
     `;
