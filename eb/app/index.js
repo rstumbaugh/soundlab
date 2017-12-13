@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
       // if DJ, add song immediately & send new song to all listeners
       addSong(sessionName, songId)
         .then((response) => {
-          io.to(sessionName).emit('new song', `New song in queue: ${songId}`);
+          io.to(sessionName).emit('new song', songId);
           logging.log(`song ID ${songId} added, ` +
             `new queue: ${response} [session=${sessionName}]`);
         })
@@ -55,7 +55,7 @@ io.on('connection', (socket) => {
     } else {
       // send message to DJ with song request
       const { dj } = session.getSessionInfo(sessionName);
-      dj.emit('new request', `New song request: ${songId}`);
+      dj.emit('new request', songId);
       logging.log(`request added: ${songId} [session=${sessionName}]`);
     }
   });
@@ -78,7 +78,8 @@ io.on('connection', (socket) => {
 // check if session exists. if yes, send song queue. otherwise 404
 app.get('/api/session/:sessionName', (req, res) => {
   const { sessionName } = req.params;
-  if (session.getSessionInfo(sessionName)) {
+  const sessionInfo = session.getSessionInfo(sessionName);
+  if (sessionInfo) {
     getSongQueue(sessionName)
       .then((response) => {
         res.json(response);
