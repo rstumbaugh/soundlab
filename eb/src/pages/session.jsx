@@ -71,7 +71,7 @@ class Session extends React.Component {
   }
 
   handleAccept(song) {
-    console.log(song);
+    socket.emit('add song', song);
   }
 
   render() {
@@ -85,16 +85,16 @@ class Session extends React.Component {
           background-color: ${styleVars.lightGray};
         }
 
-        h3 {
+        div.content h3 {
           font-weight: 600;
         }
 
-        p {
+        div.content p {
           font-weight: 300;
           color: ${styleVars.dark};
         }
 
-        .column:first-child {
+        div.content .column:first-child {
           max-width: 434px;
         }
   
@@ -105,10 +105,10 @@ class Session extends React.Component {
           margin-bottom: 0;
         }
   
-        .no-song {
+        div.content .no-song {
           text-align: center;
         }
-        .no-song .icon-wrap {
+        div.content .no-song .icon-wrap {
           width: 100%;
           text-align: center;
           font-size: 5em;
