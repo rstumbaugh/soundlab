@@ -7,7 +7,7 @@ const NowPlaying = props => (
     <h3>Now Playing</h3>
     {props.songs.length > 0 ? (
       <SoundCloud 
-        trackId={props.songs[0]} 
+        trackId={props.songs[0].id} 
         onFinish={() => console.log('done')} 
         width='500px'
       />

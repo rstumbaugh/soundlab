@@ -5,7 +5,9 @@ import NowPlaying from 'components/now-playing.jsx';
 import { Header, Content } from 'components/layout.jsx';
 import Queue from 'components/queue.jsx';
 import RequestForm from 'components/request-form.jsx';
+import Notification from 'components/notification.jsx';
 import socket from 'utils/socket';
+import newId from 'utils/newid';
 import styleVars from 'styles/variables';
 
 const propTypes = {
@@ -25,6 +27,7 @@ class Session extends React.Component {
       sessionName: props.match.params.id,
       songs: [],
       requests: [],
+      notifications: [],
       isDj: false
     };
   }
@@ -39,8 +42,9 @@ class Session extends React.Component {
       .then((response) => {
         const { songQueue, djId } = response.data;
         socket.emit('join session', this.state.sessionName);
+        
         this.setState({
-          songs: songQueue,
+          songs: songQueue.map(x => JSON.parse(x)),
           isDj: socket.id === djId
         });
       })
@@ -50,19 +54,29 @@ class Session extends React.Component {
     socket.removeListener('new song');
     socket.removeListener('sessionOver');
 
-    socket.on('new request', (songId) => {
-      this.onNewTrack(songId, 'requests');
+    socket.on('new request', (song) => {
+      this.onNewTrack(JSON.parse(song), 'requests', 'New song request');
     });
-    socket.on('new song', (songId) => {
-      this.onNewTrack(songId, 'songs');
+    socket.on('new song', (song) => {
+      this.onNewTrack(JSON.parse(song), 'songs', 'New song');
     });
     socket.on('session over', () => console.log('DJ has left. Session ended.'));
   }
   
-  onNewTrack(songId, stateAttr) {
+  onNewTrack(song, stateAttr, notificationTitle) {
     let array = this.state[stateAttr];
-    array.push(songId);
-    let s = {};
+    array.push(song);
+
+    let { notifications } = this.state;
+    notifications.push({
+      id: newId('notif'),
+      title: notificationTitle,
+      message: song
+    });
+
+    let s = {
+      notifications
+    };
     s[stateAttr] = array;
     this.setState(s);
   }
@@ -71,6 +85,13 @@ class Session extends React.Component {
     if (song) {
       socket.emit('add song', song);
     }
+  }
+
+  onNotificationClose(id) {
+    let { notifications } = this.state;
+    const idx = notifications.indexOf(e => e.id === id);
+    notifications.splice(idx, 1);
+    this.setState({ notifications });
   }
 
   handleAccept(song) {
@@ -84,7 +105,6 @@ class Session extends React.Component {
       <style>{`
         div.content {
           padding: 15px;
-          position: relative;
           background-color: ${styleVars.lightGray};
         }
 
@@ -116,6 +136,12 @@ class Session extends React.Component {
           text-align: center;
           font-size: 5em;
           margin-bottom: 25px;
+        }
+
+        div.notifications {
+          position: absolute;
+          bottom: 15px;
+          right: 15px;
         }
       `}
       </style>
@@ -182,6 +208,17 @@ class Session extends React.Component {
                 </div>
               </div>  
             </section>
+            <div className='notifications'>
+              {
+                this.state.notifications.map(n => (
+                  <Notification 
+                    {...n} 
+                    key={n.id}
+                    onClose={this.onNotificationClose.bind(this)}
+                  />
+                ))
+              }
+            </div>
           </div>
         </Content>
       </div>

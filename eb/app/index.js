@@ -10,6 +10,7 @@ const io = require('socket.io')(http, {
 const session = require('./utils/session');
 const logging = require('./utils/logging');
 const { addSong, getSongQueue, deleteSession } = require('./utils/lambda');
+const { getTrackInfo } = require('./utils/soundcloud');
 const port = 8081;
 
 app.use(express.static('dist'));
@@ -37,27 +38,32 @@ io.on('connection', (socket) => {
   });
 
   // add song
-  socket.on('add song', (songId) => {
+  socket.on('add song', (songUrl) => {
     const sessionName = session.getClientSession(socket);
     const isDj = session.isDj(socket, sessionName);
 
-    if (isDj) {
-      // if DJ, add song immediately & send new song to all listeners
-      addSong(sessionName, songId)
-        .then((response) => {
-          io.to(sessionName).emit('new song', songId);
-          logging.log(`song ID ${songId} added, ` +
-            `new queue: ${response} [session=${sessionName}]`);
-        })
-        .catch((err) => {
-          logging.error(err);
+    getTrackInfo(songUrl)
+      .then((response) => {
+        const song = JSON.stringify({
+          id: response.id,
+          title: response.title,
+          artist: response.user.username
         });
-    } else {
-      // send message to DJ with song request
-      const { dj } = session.getSessionInfo(sessionName);
-      dj.emit('new request', songId);
-      logging.log(`request added: ${songId} [session=${sessionName}]`);
-    }
+
+        if (isDj) {
+          addSong(sessionName, song)
+            .then((queue) => {
+              io.to(sessionName).emit('new song', song);
+              logging.log(`song added: ${song}, new queue: ${queue} [session=${sessionName}]`);
+            })
+            .catch(err => logging.error(err));
+        } else {
+          const { dj } = session.getSessionInfo(sessionName);
+          dj.emit('new request', song);
+          logging.log(`request added: ${song} [session=${sessionName}]`);
+        }
+      })
+      .catch(err => logging.error(err));
   });
 
   // user leaves session

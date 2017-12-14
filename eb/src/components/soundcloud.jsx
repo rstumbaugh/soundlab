@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import SoundcloudWidget from 'soundcloud-widget';
 
 const propTypes = {
-  trackId: PropTypes.string.isRequired,
+  trackId: PropTypes.number.isRequired,
   onFinish: PropTypes.func.isRequired,
   width: PropTypes.string
 };

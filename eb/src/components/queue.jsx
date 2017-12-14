@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import styled from 'styled-components';
 import styleVars from 'styles/variables';
+import newId from 'utils/newid';
 
 const propTypes = {
   title: PropTypes.string.isRequired,
@@ -33,6 +34,7 @@ const Queue = (props) => {
         {props.items.length > 0 ? (
           props.items.map(song => (
             <QueueItem 
+              key={newId('qItem')}
               song={song} 
               highlightFirst={props.highlightFirst}
               showAcceptReject={props.showAcceptReject}
@@ -88,7 +90,7 @@ const QueueItem = (props) => {
 
   return (
     <StyledItem {...props}>
-      { props.song }
+      { `${props.song.artist} - ${props.song.title}` }
       {props.showAcceptReject ? (
         <div className='icon-wrap'>
           <span 
@@ -111,7 +113,7 @@ const QueueItem = (props) => {
   );
 };
 QueueItem.propTypes = {
-  song: PropTypes.string,
+  song: PropTypes.object.isRequired,
   showAcceptReject: PropTypes.bool,
   highlightFirst: PropTypes.bool,
   onAccept: PropTypes.func,
