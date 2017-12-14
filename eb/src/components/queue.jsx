@@ -63,10 +63,20 @@ const QueueItem = (props) => {
     padding: ${p => p.showAcceptReject ? '10px 60px 10px 5px' : '10px 5px'};
     position: relative;
     word-wrap: break-word;
+    color: ${styleVars.dark};
+    cursor: pointer;
 
     &:first-child {
       border-top: 0;
       color: ${p => p.highlightFirst ? styleVars.infoBlue : 'inherit'};
+
+      & a, & a:hover {
+        color: ${p => p.highlightFirst ? styleVars.infoBlue : 'inherit'};
+      }
+    }
+
+    a, a:hover {
+      color: ${styleVars.dark};
     }
 
     .icon-wrap {
@@ -90,7 +100,9 @@ const QueueItem = (props) => {
 
   return (
     <StyledItem {...props}>
-      { `${props.song.artist} - ${props.song.title}` }
+      <a href={props.song.url} target='_blank'>
+        { `${props.song.artist} - ${props.song.title}` }
+      </a>
       {props.showAcceptReject ? (
         <div className='icon-wrap'>
           <span 

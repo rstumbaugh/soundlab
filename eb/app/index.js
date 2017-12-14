@@ -37,30 +37,47 @@ io.on('connection', (socket) => {
     logging.log(`[client=${socket.id}] joined session ${sessionName}`);
   });
 
+  // DJ accepts song request
+  socket.on('accept request', (songObj) => {
+    const sessionName = session.getClientSession(socket);
+    const isDj = session.isDj(socket, sessionName);
+    const song = JSON.stringify(songObj);
+
+    if (isDj) {
+      addSong(sessionName, song)
+        .then((queue) => {
+          io.to(sessionName).emit('new song', song);
+          logging.log(`request accepted: ${song.id}, new queue=${queue} [session=${sessionName}]`);
+        })
+        .catch(err => logging.error(err));
+    }
+  });
+
   // add song
   socket.on('add song', (songUrl) => {
     const sessionName = session.getClientSession(socket);
     const isDj = session.isDj(socket, sessionName);
-
+    
     getTrackInfo(songUrl)
       .then((response) => {
         const song = JSON.stringify({
           id: response.id,
           title: response.title,
-          artist: response.user.username
+          artist: response.user.username,
+          url: response.permalink_url
         });
 
         if (isDj) {
           addSong(sessionName, song)
             .then((queue) => {
               io.to(sessionName).emit('new song', song);
-              logging.log(`song added: ${song}, new queue: ${queue} [session=${sessionName}]`);
+              logging.log(`song added: ${song.id}, new queue: ${queue} [session=${sessionName}]`);
             })
             .catch(err => logging.error(err));
         } else {
           const { dj } = session.getSessionInfo(sessionName);
           dj.emit('new request', song);
-          logging.log(`request added: ${song} [session=${sessionName}]`);
+          logging.log(`request added: ${song.id} [session=${sessionName}]`);
         }
       })
       .catch(err => logging.error(err));

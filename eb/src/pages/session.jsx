@@ -94,8 +94,20 @@ class Session extends React.Component {
     this.setState({ notifications });
   }
 
-  handleAccept(song) {
-    socket.emit('add song', song);
+  onRequestAccept(song) {
+    socket.emit('accept request', song);
+    this.removeRequest(song.id);
+  }
+
+  onRequestReject(song) {
+    this.removeRequest(song.id);
+  }
+
+  removeRequest(songId) {
+    let { requests } = this.state;
+    const idx = requests.indexOf(r => r.id === songId);
+    requests.splice(idx, 1);
+    this.setState({ requests });
   }
 
   render() {
@@ -179,8 +191,8 @@ class Session extends React.Component {
                       items={this.state.requests}
                       maxHeight='150px'
                       showAcceptReject
-                      onAccept={this.handleAccept.bind(this)}
-                      onReject={this.handleAccept.bind(this)}
+                      onAccept={this.onRequestAccept.bind(this)}
+                      onReject={this.onRequestReject.bind(this)}
                     />
                   </div>
                 ) : (
