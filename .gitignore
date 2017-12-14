@@ -9,9 +9,12 @@ eb/.elasticbeanstalk
 **/npm-debug.log
 *.db
 lambda_funcs/*
-!lambda_funcs/add_song_request/
-lambda_funcs/add_song_request/*
-!lambda_funcs/add_song_request/func.py
+!lambda_funcs/add_song/
+lambda_funcs/add_song/*
+!lambda_funcs/add_song/func.py
 !lambda_funcs/get_song_queue/
 lambda_funcs/get_song_queue/*
 !lambda_funcs/get_song_queue/func.py
+!lambda_funcs/delete_session/
+lambda_funcs/delete_session/*
+!lambda_funcs/delete_session/func.py
