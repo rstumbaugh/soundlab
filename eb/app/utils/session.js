@@ -1,6 +1,19 @@
 let sessions = {};
 const sessionNameLength = 5;
 
+function indexOf(objArray, predicate) {
+  let idx = -1;
+  for (let i = 0; i < objArray.length; i++) {
+    const obj = objArray[i];
+    if (predicate(obj)) {
+      idx = i;
+      break;
+    }
+  }
+
+  return idx;
+}
+
 function getUniqueSessionName() {
   let sessionName;
   const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
@@ -64,7 +77,7 @@ function getClientSession(socket) {
 function leaveSession(socket, sessionName = '') {
   if (sessionName) {
     let { clients, dj } = sessions[sessionName];
-    const clientIndex = clients.indexOf(c => c.id === socket.id);
+    const clientIndex = indexOf(clients, c => c.id === socket.id);
     clients.splice(clientIndex, 1);
     sessions[sessionName].clients = clients;
 
