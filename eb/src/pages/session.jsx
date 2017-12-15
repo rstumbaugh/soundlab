@@ -68,8 +68,11 @@ class Session extends React.Component {
   }
   
   onNewTrack(song, stateAttr, notificationTitle) {
+    let newTrack = song;
+    newTrack.uid = newId('track');
+
     let array = this.state[stateAttr];
-    array.push(song);
+    array.push(newTrack);
 
     let { notifications } = this.state;
     notifications.push({
