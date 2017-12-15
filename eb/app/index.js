@@ -9,7 +9,7 @@ const io = require('socket.io')(http, {
 });
 const session = require('./utils/session');
 const logging = require('./utils/logging');
-const { addSong, getSongQueue, deleteSession } = require('./utils/lambda');
+const { addSong, getSongQueue, deleteSession, deleteSong } = require('./utils/lambda');
 const { getTrackInfo } = require('./utils/soundcloud');
 const port = 8081;
 
@@ -83,6 +83,16 @@ io.on('connection', (socket) => {
         }
       })
       .catch(err => logging.error(err));
+  });
+
+  // DJ finished song
+  socket.on('song done', () => {
+    const sessionName = session.getClientSession(socket);
+    const isDj = session.isDj(socket, sessionName);
+
+    if (isDj) {
+      deleteSong(sessionName);
+    }
   });
 
   // user leaves session

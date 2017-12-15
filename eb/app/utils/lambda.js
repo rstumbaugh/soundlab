@@ -15,6 +15,11 @@ function deleteSession(sessionName) {
   return request.delete(process.env.LAMBDA_HOST, url);
 }
 
+function deleteSong(sessionName) {
+  const url = `/prod/delete_song?session=${sessionName}`;
+  return request.delete(process.env.LAMBDA_HOST, url);
+}
+
 module.exports = {
-  addSong, getSongQueue, deleteSession
+  addSong, getSongQueue, deleteSession, deleteSong
 };

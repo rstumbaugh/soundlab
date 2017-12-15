@@ -25,10 +25,20 @@ class SoundCloud extends React.Component {
     this.player.play({
       streamUrl: this.props.song.stream
     });
+
+    this.player.on('ended', () => this.props.onFinish());
     this.player.on('timeupdate', () => {
       const progress = this.player.audio.currentTime / this.props.song.duration;
       this.setState({ progress });
     });
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.song.uid !== this.props.song.uid) {
+      this.player.play({
+        streamUrl: nextProps.song.stream
+      });
+    }
   }
 
   render() {

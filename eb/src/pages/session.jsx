@@ -114,6 +114,10 @@ class Session extends React.Component {
     let { songs } = this.state;
     songs.splice(0, 1);
     this.setState({ songs });
+
+    if (this.state.isDj) {
+      socket.emit('song done');
+    }
   }
 
   removeRequest(songId) {
