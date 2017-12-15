@@ -33,7 +33,6 @@ io.on('connection', (socket) => {
     }
 
     session.joinSession(sessionName, socket);
-    io.to(sessionName).emit('new client', `${socket.id} joined the session`);
     logging.log(`[client=${socket.id}] joined session ${sessionName}`);
   });
 
@@ -64,7 +63,10 @@ io.on('connection', (socket) => {
           id: response.id,
           title: response.title,
           artist: response.user.username,
-          url: response.permalink_url
+          url: response.permalink_url,
+          albumArt: response.artwork_url.replace('-large', '-t500x500'),
+          stream: response.stream_url,
+          duration: response.duration / 1000
         });
 
         if (isDj) {
