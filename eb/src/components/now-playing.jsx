@@ -7,9 +7,10 @@ const NowPlaying = props => (
     <h3>Now Playing</h3>
     {props.songs.length > 0 ? (
       <SoundCloud 
-        trackId={props.songs[0].id} 
-        onFinish={() => console.log('done')} 
-        width='500px'
+        song={props.songs[0]} 
+        onFinish={props.onSongFinish} 
+        width='500'
+        height='300px'
       />
     ) : (
       <div className='no-song'>
@@ -23,7 +24,8 @@ const NowPlaying = props => (
 );
 
 NowPlaying.propTypes = {
-  songs: PropTypes.array.isRequired
+  songs: PropTypes.array.isRequired,
+  onSongFinish: PropTypes.func.isRequired
 };
 
 export default NowPlaying;

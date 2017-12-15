@@ -8,6 +8,7 @@ import RequestForm from 'components/request-form.jsx';
 import Notification from 'components/notification.jsx';
 import socket from 'utils/socket';
 import newId from 'utils/newid';
+import indexOf from 'utils/array';
 import styleVars from 'styles/variables';
 
 const propTypes = {
@@ -47,6 +48,9 @@ class Session extends React.Component {
           songs: songQueue.map(x => JSON.parse(x)),
           isDj: socket.id === djId
         });
+        this.setState({
+          isDj: socket.id === djId
+        });
       })
       .catch(() => this.props.history.push('/'));
 
@@ -73,7 +77,7 @@ class Session extends React.Component {
       title: notificationTitle,
       message: song
     });
-
+    
     let s = {
       notifications
     };
@@ -89,7 +93,7 @@ class Session extends React.Component {
 
   onNotificationClose(id) {
     let { notifications } = this.state;
-    const idx = notifications.indexOf(e => e.id === id);
+    const idx = indexOf(notifications, e => e.id === id);
     notifications.splice(idx, 1);
     this.setState({ notifications });
   }
@@ -102,17 +106,23 @@ class Session extends React.Component {
   onRequestReject(song) {
     this.removeRequest(song.id);
   }
+  
+  onSongFinish() {
+    let { songs } = this.state;
+    songs.splice(0, 1);
+    this.setState({ songs });
+  }
 
   removeRequest(songId) {
     let { requests } = this.state;
-    const idx = requests.indexOf(r => r.id === songId);
+    const idx = indexOf(requests, r => r.id === songId);
     requests.splice(idx, 1);
     this.setState({ requests });
   }
 
   render() {
     // can't use styled-components as wrapper
-    // need to watch for "shouldComponentUpdate" in soundcloud widget
+    // need to watch for shouldComponentUpdate in soundcloud widget
     const style = (
       <style>{`
         div.content {
@@ -175,9 +185,6 @@ class Session extends React.Component {
                     Session name: 
                   </h3>
                   <div>{ this.state.sessionName }</div>
-                  <div className='button is-small is-info'>
-                    Copy session link
-                  </div>
                 </div>
                 <div className='box'>
                   <RequestForm 
@@ -201,7 +208,10 @@ class Session extends React.Component {
               </div>
               <div className='column now-playing-column'>
                 <div className='box'>
-                  <NowPlaying songs={this.state.songs} />
+                  <NowPlaying 
+                    songs={this.state.songs}
+                    onSongFinish={this.onSongFinish.bind(this)} 
+                  />
                 </div>
               </div>
               <div className='column queue-column'>
